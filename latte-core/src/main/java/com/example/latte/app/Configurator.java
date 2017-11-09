@@ -1,6 +1,11 @@
 package com.example.latte.app;
 
 
+import com.joanzapata.android.iconify.IconFontDescriptor;
+import com.joanzapata.android.iconify.Iconify;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.WeakHashMap;
 
 /**
@@ -9,7 +14,8 @@ import java.util.WeakHashMap;
 
 public class Configurator {
 
-    private static final WeakHashMap<String,Object> LATTE_CONFIGS = new WeakHashMap<>();
+    private static final HashMap<String,Object> LATTE_CONFIGS = new HashMap<>();
+    private static final ArrayList<IconFontDescriptor> ICONS = new ArrayList<>();
 
     private Configurator(){
         LATTE_CONFIGS.put(ConfigType.CONFIG_READY.name(), false);
@@ -19,7 +25,7 @@ public class Configurator {
         return Hodler.INSTANCE;
     }
 
-    final  WeakHashMap<String,Object> getLatteConfigs(){
+    final  HashMap<String,Object> getLatteConfigs(){
         return LATTE_CONFIGS;
     }
 
@@ -28,6 +34,7 @@ public class Configurator {
     }
 
     public final void configure(){
+        initIcons();
         LATTE_CONFIGS.put(ConfigType.CONFIG_READY.name(),true);
     }
 
@@ -36,6 +43,19 @@ public class Configurator {
         return this;
     }
 
+    private  void initIcons(){
+        if(ICONS.size() > 0){
+            final Iconify.IconifyInitializer initializer = Iconify.with(ICONS.get(0));
+            for (int i= 1;i<ICONS.size();i++){
+                initializer.with(ICONS.get(i));
+            }
+        }
+    }
+
+    public final Configurator withIcon(IconFontDescriptor descriptor){
+        ICONS.add(descriptor);
+        return this;
+    }
 
     private  void checkConfiguration(){
         final boolean isReady = (boolean) LATTE_CONFIGS.get(ConfigType.CONFIG_READY.name());
